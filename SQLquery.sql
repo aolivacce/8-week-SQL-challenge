@@ -120,8 +120,7 @@ WITH customer_popularity AS (
 SELECT customer_id, product_name, purchase_count
 FROM customer_popularity
 WHERE item_rank = 1;
-
-                             
+                          
 -- 6. Which item was purchased first by the customer after they became a member?
 
 WITH ordered_sales AS (
