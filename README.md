@@ -8,4 +8,4 @@ This repository contains the solutions for #8WeekSQLChallenge at https://8weeksq
 
 **Entity Relationship Diagram**
 
-Feel free to view the case study [here](https://8weeksqlchallenge.com/case-study-1/) and my solution [here]()
+Feel free to view the case study [here](https://8weeksqlchallenge.com/case-study-1/) and my solution [here](https://github.com/aolivacce/8-week-SQL-challenge/blob/main/Danny's%20Diner/SQLquery.sql)
