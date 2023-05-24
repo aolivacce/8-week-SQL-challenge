@@ -148,6 +148,35 @@ GROUP BY s.customer_id
 
 -- 8. What is the total items and amount spent for each member before they became a member?
 
+SELECT
+    s.customer_id,
+    COUNT(*) AS total_items,
+    SUM(s.price) AS total_amount_spent
+FROM
+    dbo.sales AS s
+JOIN
+    dbo.members AS mem ON s.customer_id = mem.customer_id
+WHERE
+    s.order_date < mem.join_date
+GROUP BY
+    s.customer_id;
+    
 -- 9.  If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+
+WITH points_cte AS
+(
+	SELECT *, 
+		CASE WHEN product_name = 'sushi' THEN price * 20
+		ELSE price * 10 END AS points
+	FROM menu
+)
+
+SELECT 
+  s.customer_id, 
+  SUM(p.points) AS total_points
+FROM points_cte AS p
+JOIN sales AS s
+	ON p.product_id = s.product_id
+GROUP BY s.customer_id
 
 -- 10. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
