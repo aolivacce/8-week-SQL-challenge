@@ -139,6 +139,12 @@ WHERE rank = 1;
 
 -- 7. Which item was purchased just before the customer became a member?
 
+SELECT s.customer_id, m.product_name, MAX(s.order_date) AS last_purchase_date
+FROM dbo.sales AS s
+JOIN dbo.menu AS m ON s.product_id = m.product_id
+JOIN dbo.members AS mem ON s.customer_id = mem.customer_id
+WHERE s.order_date < mem.join_date
+GROUP BY s.customer_id
 
 -- 8. What is the total items and amount spent for each member before they became a member?
 
