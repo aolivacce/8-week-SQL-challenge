@@ -1,3 +1,11 @@
+--------------------------------
+--CASE STUDY #1: DANNY'S DINER--
+     Tool used:PostgreSQL
+--------------------------------
+
+
+
+
 CREATE SCHEMA dannys_diner;
 SET search_path = dannys_diner;
 
