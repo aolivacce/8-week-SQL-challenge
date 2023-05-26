@@ -19,4 +19,6 @@ View the case study [here](https://8weeksqlchallenge.com/case-study-1/) and my s
 **Business Task**
 
 **Entity Relationship Diagram**
-View the case study [here]()!
+
+View the case study [here](https://8weeksqlchallenge.com/case-study-2/) and my solution [here]()!
+
