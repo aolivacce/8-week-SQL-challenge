@@ -126,19 +126,15 @@ VALUES
   
 -- How many pizzas were ordered? 
 
-
 SELECT COUNT(*) AS order_count 
 FROM pizza_runner.customer_orders;
 
-
 -- How many unique customer orders were made?
-
 
 SELECT COUNT(DISTINCT order_id) AS order_count 
 FROM pizza_runner.customer_orders;
 
 -- How many successful orders were delivered by each runner?
-
 
 SELECT runner_id, COUNT(order_id) 
 FROM pizza_runner.runner_orders
@@ -146,7 +142,6 @@ WHERE distance IS NOT NULL
 GROUP BY runner_id;
 
 -- How many of each type of pizza was delivered?
-
 
 SELECT p.pizza_name, COUNT(c.pizza_id)
 FROM pizza_runner.customer_orders AS c
@@ -156,7 +151,6 @@ WHERE r.distance IS NOT NULL
 GROUP BY p.pizza_name;
 
 -- How many Vegetarian and Meatlovers were ordered by each customer?
-
 
 SELECT c.customer_id, p.pizza_name, COUNT(c.order_id)
 FROM pizza_runner.customer_orders AS c
