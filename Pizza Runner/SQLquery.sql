@@ -158,4 +158,69 @@ JOIN pizza_runner.pizza_names AS p
 ON c.pizza_id = p.pizza_id
 GROUP BY c.customer_id, p.pizza_name
 ORDER BY c.customer_id;
-  
+
+-- What was the maximum number of pizzas delivered in a single order?
+
+WITH delivered AS (
+  SELECT 
+    c.order_id, 
+    COUNT(c.pizza_id) AS pizza_per_order
+  FROM pizza_runner.customer_orders AS c
+  JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
+  WHERE r.distance IS NOT NULL
+  GROUP BY c.order_id
+)
+SELECT MAX(pizza_per_order) AS max_pizza_per_order
+FROM delivered;
+
+-- For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
+
+SELECT
+  c.customer_id,
+  COUNT(CASE WHEN c.exclusions <> ' ' OR c.extras <> ' ' THEN 1 END) AS changes,
+  COUNT(CASE WHEN (c.exclusions = ' ' AND c.extras = ' ') OR (c.exclusions IS NULL AND c.extras IS NULL) THEN 1 END) AS no_change
+FROM pizza_runner.customer_orders AS c
+JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
+WHERE r.distance IS NOT NULL
+GROUP BY c.customer_id
+ORDER BY c.customer_id;
+
+-- How many pizzas were delivered that had both exclusions and extras?
+
+WITH delivered AS (
+  SELECT 
+    c.order_id, 
+    COUNT(c.pizza_id) AS pizza_per_order
+  FROM pizza_runner.customer_orders AS c
+  JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
+  WHERE r.distance IS NOT NULL
+  GROUP BY c.order_id
+)
+SELECT 
+  COUNT(c.pizza_id) as delivered_with_exclusions_and_extras 
+FROM delivered
+WHERE 
+  pickup_time <> 'null'
+  AND exclusions IS NOT NULL AND LENGTH(exclusions) > 0
+  AND extras IS NOT NULL AND LENGTH(extras) > 0;
+
+-- What was the total volume of pizzas ordered for each hour of the day?
+
+SELECT EXTRACT(HOUR FROM order_time) AS hour_of_day,
+  COUNT(*) AS total_pizzas_ordered
+FROM pizza_runner.customer_orders
+GROUP BY hour_of_day
+ORDER BY
+  hour_of_day;
+
+-- What was the volume of orders for each day of the week?
+
+SELECT
+  to_char(date_trunc('day', order_time + INTERVAL '2 days'), 'Day') AS day_of_week,
+  COUNT(order_id) AS total_pizzas_ordered
+FROM
+  pizza_runner.customer_orders
+GROUP BY
+  day_of_week;
+
+
