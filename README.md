@@ -22,3 +22,26 @@ View the case study [here](https://8weeksqlchallenge.com/case-study-1/) and my s
 
 View the case study [here](https://8weeksqlchallenge.com/case-study-2/) and my solution [here]()!
 
+## Case Study #3: Foodie Fi
+
+**Business Task**
+
+**Entity Relationship Diagram**
+
+View the case study [here](https://8weeksqlchallenge.com/case-study-3/) and my solution [here]()!
+
+## Case Study #4: Data Bank
+
+**Business Task**
+
+**Entity Relationship Diagram**
+
+View the case study [here](https://8weeksqlchallenge.com/case-study-4/) and my solution [here]()!
+
+## Case Study #5: Data Mart
+
+**Business Task**
+
+**Entity Relationship Diagram**
+
+View the case study [here](https://8weeksqlchallenge.com/case-study-5/) and my solution [here]()!
