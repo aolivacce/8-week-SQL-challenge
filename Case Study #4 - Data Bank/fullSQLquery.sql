@@ -1,3 +1,9 @@
+---------------------
+-- Case Study #4 --
+-- PART A -- 
+-- Customer Nodes Exploration --
+---------------------
+
 -- How many unique nodes are there on the Data Bank system?
 
 SELECT COUNT(DISTINCT node_id) 
@@ -62,3 +68,67 @@ SELECT DISTINCT region_id,
 	        PERCENTILE_CONT(0.95) WITHIN GROUP(ORDER BY reallocation_days) OVER(PARTITION BY region_name) AS percentile_95
 FROM date_diff
 ORDER BY region_name;
+
+
+------------------------------
+-- B. Customer Transactions --
+------------------------------
+
+-- What is the unique count and total amount for each transaction type?
+
+SELECT txn_type, COUNT(customer_id) AS total_count, SUM(txn_amount) AS total_amount
+FROM data_bank.customer_transactions
+GROUP BY txn_type; 
+
+-- What is the average total historical deposit counts and amounts for all customers?
+
+WITH cte AS (
+SELECT customer_id, COUNT(customer_id) AS txn_count , AVG(txn_amount) AS total_amount
+FROM data_bank.customer_transactions
+WHERE txn_type = 'deposit'
+GROUP BY customer_id)
+
+SELECT ROUND(AVG(txn_count),2) AS avg_txn_count, 
+ROUND(AVG(total_amount),2)  AS avg_total
+FROM cte;;
+
+-- For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?
+
+WITH cust_activity AS (
+  SELECT 
+    customer_id, 
+    TO_CHAR(txn_date, 'Month') AS month_name, 
+    COUNT(CASE WHEN txn_type = 'deposit' THEN 1 END) AS deposit_count,
+    COUNT(CASE WHEN txn_type = 'purchase' THEN 1 END) AS purchase_count,
+    COUNT(CASE WHEN txn_type = 'withdrawal' THEN 1 END) AS withdrawal_count
+  FROM 
+    data_bank.customer_transactions
+  GROUP BY 
+    customer_id, month_name
+)
+
+SELECT 
+  month_name, 
+  COUNT(DISTINCT customer_id) AS active_customers
+FROM 
+  cust_activity
+WHERE 
+  deposit_count > 1
+  AND (purchase_count = 1 OR withdrawal_count = 1)
+GROUP BY 
+  month_name;
+
+-- What is the closing balance for each customer at the end of the month?
+
+SELECT customer_id, 
+TO_CHAR(txn_date, 'Month') AS month, 
+SUM(txn_amount) AS closing_balance
+FROM data_bank.customer_transactions 
+GROUP BY customer_id, month
+ORDER BY customer_id;
+
+-- What is the percentage of customers who increase their closing balance by more than 5%?
+
+
+
+
