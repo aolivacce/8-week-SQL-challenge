@@ -4,8 +4,8 @@
 ## Table of Contents
   - [Business Task](#business-task)
   - [Entity Relationship Diagram](#entity-relationship-diagram)
-  - [Data Preperation[(data-preperation)
-  - [Solutions](#solutions
+  - [Data Preperation](data-preperation)
+  - [Solutions](#solutions)
 
 ## Business Task 
 Danny was scrolling through his Instagram feed when something really caught his eye - “80s Retro Styling and Pizza Is The Future!”
