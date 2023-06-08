@@ -85,7 +85,32 @@ SELECT plan_id, customers,
 FROM customer_breakdown
 ORDER BY plan_id;
 
+-- What is the number and percentage of customer plans after their initial free trial?
 
+WITH next_plans AS (
+  SELECT 
+    customer_id, 
+    plan_id, 
+    LEAD(plan_id) OVER(
+      PARTITION BY customer_id 
+      ORDER BY plan_id) as next_plan_id
+  FROM foodie_fi.subscriptions
+)
+
+SELECT 
+  next_plan_id AS plan_id, 
+  COUNT(customer_id) AS converted_customers,
+  ROUND(100 * 
+    COUNT(customer_id)::NUMERIC 
+    / (SELECT COUNT(DISTINCT customer_id) 
+      FROM foodie_fi.subscriptions)
+  ,1) AS conversion_percentage
+FROM next_plans
+WHERE next_plan_id IS NOT NULL 
+  AND plan_id = 0
+GROUP BY next_plan_id
+ORDER BY next_plan_id;
+    
 -- How many customers have upgraded to an annual plan in 2020?
 
 SELECT COUNT(DISTINCT customer_id)
