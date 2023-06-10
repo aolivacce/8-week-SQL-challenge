@@ -222,7 +222,7 @@ ORDER BY co.customer_id;
 
 **Result:**
 
-<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/835aadff-cc85-44d8-b266-014841a7e119" width=10% height=10%>
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/835aadff-cc85-44d8-b266-014841a7e119" width=20% height=20%>
 
 
 8. How many pizzas were delivered that had both exclusions and extras?
