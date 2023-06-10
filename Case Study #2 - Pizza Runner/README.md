@@ -177,7 +177,7 @@ GROUP BY customer_id;
 
 **Result:**
 
-<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9582fff7-4ae9-42e9-b04a-198c983244fe" width=10% height=10%>
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9582fff7-4ae9-42e9-b04a-198c983244fe" width=20% height=20%>
 
 
 6. What was the maximum number of pizzas delivered in a single order?
