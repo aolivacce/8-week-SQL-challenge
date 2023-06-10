@@ -21,39 +21,33 @@ Danny wants to use the data to answer a few simple questions about his customers
 
 ## Questions and Solutions
 
-1. What is the total amount each customer spent at the restaurant?
-
-Steps:
-
-Query:
+**1. What is the total amount each customer spent at the restaurant?**
 
 ```sql
 SELECT s.customer_id, sum(price) AS total_sales
-FROM dbo.sales AS s
-JOIN dbo.menu AS m
+FROM dannys_diner.sales AS s
+JOIN dannys_diner.menu AS m
 ON s.product_id = m.product_id
-GROUP BY customer_id; 
+GROUP BY customer_id
+ORDER BY customer_id; 
 ```
-Result:
+**Result:**
 
-2. How many days has each customer visited the restaurant?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/2e2044d2-59de-4887-baec-ffedeefe2157" width=40% height=40%>
+
+
+**2. How many days has each customer visited the restaurant?**
  
-Steps:
-
-Query:
-
 ```sql
-
 SELECT customer_id, COUNT(DISTINCT(order_date))
-FROM dbo.sales
+FROM dannys_diner.sales
+GROUP BY customer_id;
 ```
-Result:
+**Result:**
 
-3. What was the first item from the menu purchased by each customer?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9e8a642b-d2a6-4748-bb97-3247f8892cef" width=50% height=50%>
 
-Steps:
-
-Query:
+**3. What was the first item from the menu purchased by each customer?**
 ```sql
 with ordered_sales AS ( 
 SELECT customer_id, order_date, product_name,
@@ -68,13 +62,10 @@ FROM ordered_sales
 WHERE rank = 1
 GROUP BY customer_id, product_name;
 ```
-Result:
+**Result:**
 
-4. What is the most purchased item on the menu and how many times was it purchased by all customers?
+**4. What is the most purchased item on the menu and how many times was it purchased by all customers?**
 
-Steps:
-
-Query:
 ```sql
 SELECT m.product_name, COUNT(*) 
 FROM dbo.sales AS s
@@ -86,11 +77,8 @@ LIMIT 1;
 ```
 Result:
 
-5. Which item was the most popular for each customer?
+**5. Which item was the most popular for each customer?**
 
-Steps:
-
-Query:
 ```sql
 WITH customer_popularity AS (
   SELECT s.customer_id, m.product_name, COUNT(*) AS purchase_count,
@@ -105,14 +93,11 @@ FROM customer_popularity
 WHERE item_rank = 1;
 ```
 
-Result:
+**Result:**
 
 
-6. Which item was purchased first by the customer after they became a member?
+**6. Which item was purchased first by the customer after they became a member?**
 
-Steps:
-
-Query:
 ```sql
 
 WITH ordered_sales AS (
@@ -127,13 +112,9 @@ SELECT customer_id, product_name, order_date
 FROM ordered_sales
 WHERE rank = 1;
 ```
-Result:
+**Result:**
 
-7. Which item was purchased just before the customer became a member?
-
-Steps:
-
-Query:
+**7. Which item was purchased just before the customer became a member?**
 
 ```sql
 
@@ -145,13 +126,10 @@ WHERE s.order_date < mem.join_date
 GROUP BY s.customer_id
 
 ```
-Result:
+**Result:**
 
-8. What is the total items and amount spent for each member before they became a member?
+**8. What is the total items and amount spent for each member before they became a member?**
 
-Steps:
-
-Query:
 ```sql
 SELECT
     s.customer_id,
@@ -167,13 +145,10 @@ GROUP BY
     s.customer_id;
 
 ```
-Result:
+**Result:**
 
-9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?
+**9. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have?**
 
-Steps:
-
-Query:
 ```sql
 WITH points_cte AS
 (
@@ -191,13 +166,10 @@ JOIN sales AS s
 	ON p.product_id = s.product_id
 GROUP BY s.customer_id
 ```
-Result:
+**Result:**
 
-10. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
+**10. If each $1 spent equates to 10 points and sushi has a 2x points multiplier - how many points would each customer have. In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?**
 
-Steps:
-
-Query:
 ```sql
 WITH dates_cte AS (
   SELECT 
@@ -226,7 +198,7 @@ INNER JOIN dannys_diner.menu
 GROUP BY sales.customer_id;
 
 ```
-Result:
+**Result:**
 
 
 
