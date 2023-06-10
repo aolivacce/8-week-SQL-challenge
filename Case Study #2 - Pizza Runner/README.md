@@ -97,60 +97,68 @@ Result:
 
 1. How many pizzas were ordered?
 
-Steps:
-
-Query:
 ```sql
 SELECT COUNT(*) AS order_count 
 FROM pizza_runner.customer_orders;
 
 ```
-Result:
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/d9896686-ee21-4a8a-9b2a-ec77341f6472" width=20% height=20%>
+
 
 2. How many unique customer orders were made?
 
-Steps:
-
-Query:
 ```sql
 SELECT COUNT(DISTINCT order_id) AS order_count 
 FROM pizza_runner.customer_orders;
 ```
-Result:
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/0886402c-3833-4b05-8987-c0ff4c5b390a" width=20% height=20%>
+
 
 3. How many successful orders were delivered by each runner?
 
-Steps:
-
-Query:
 ```sql
-SELECT runner_id, COUNT(order_id) 
+SELECT
+  runner_id,
+  COUNT(order_id) AS successful_orders
 FROM pizza_runner.runner_orders
-WHERE distance IS NOT NULL
-GROUP BY runner_id;
+WHERE cancellation IS NULL
+OR cancellation NOT IN ('Restaurant Cancellation', 'Customer Cancellation')
+GROUP BY runner_id
+ORDER BY successful_orders DESC;
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/6f809baf-6549-4c86-9b14-823041706014" width=20% height=20%>
 
 4. How many of each type of pizza was delivered?
 
-Steps:
-
-Query:
 ```sql
-SELECT p.pizza_name, COUNT(c.pizza_id)
+SELECT
+  p.pizza_name,
+  COUNT(c.*) AS pizza_type_count
 FROM pizza_runner.customer_orders AS c
-JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
-JOIN pizza_runner.pizza_names AS p ON c.pizza_id = p.pizza_id
-WHERE r.distance IS NOT NULL
-GROUP BY p.pizza_name;
+INNER JOIN pizza_runner.pizza_names AS p
+   ON c.pizza_id = p.pizza_id
+INNER JOIN pizza_runner.runner_orders AS r
+   ON c.order_id = r.order_id
+WHERE cancellation IS NULL
+OR cancellation NOT IN ('Restaurant Cancellation', 'Customer Cancellation')
+GROUP BY p.pizza_name
+ORDER BY p.pizza_name;
+
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/ed625132-af81-4f3c-ba72-eabfe29d3bb4" width=20% height=20%>
+
 
 5. How many Vegetarian and Meatlovers were ordered by each customer?
-
-Steps:
-
-Query:
 
 ```sql
 SELECT c.customer_id, p.pizza_name, COUNT(c.order_id)
@@ -160,7 +168,8 @@ ON c.pizza_id = p.pizza_id
 GROUP BY c.customer_id, p.pizza_name
 ORDER BY c.customer_id;
 ```
-Result:
+
+**Result:**
 
 6. What was the maximum number of pizzas delivered in a single order?
 
