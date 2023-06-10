@@ -81,14 +81,17 @@ CREATE TEMP TABLE updated_runner_orders AS (
   FROM pizza_runner.runner_orders);
 SELECT * FROM updated_runner_orders;
 ```
-Now, to check the data types
+Now, to check the data types:
+
 ```sql
+
 SELECT
   table_name,
   column_name,
   data_type
 FROM information_schema.columns
 WHERE table_name = 'updated_customer_orders'
+
 ```
 Result:
 ![E77532AA-135B-4075-BF5B-90A974333EEE](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/3caf090b-ee9d-4821-918c-17afe9567abc)
@@ -102,6 +105,7 @@ SELECT COUNT(*) AS order_count
 FROM pizza_runner.customer_orders;
 
 ```
+
 **Result:**
 
 <img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/d9896686-ee21-4a8a-9b2a-ec77341f6472" width=20% height=20%>
@@ -161,21 +165,25 @@ ORDER BY p.pizza_name;
 5. How many Vegetarian and Meatlovers were ordered by each customer?
 
 ```sql
-SELECT c.customer_id, p.pizza_name, COUNT(c.order_id)
-FROM pizza_runner.customer_orders AS c
-JOIN pizza_runner.pizza_names AS p
-ON c.pizza_id = p.pizza_id
-GROUP BY c.customer_id, p.pizza_name
-ORDER BY c.customer_id;
+
+SELECT
+  customer_id,
+  SUM(CASE WHEN pizza_id = 1 THEN 1 ELSE 0 END) AS meat_lovers,
+  SUM(CASE WHEN pizza_id = 2 THEN 1 ELSE 0 END) AS vegetarian
+FROM pizza_runner.customer_orders
+GROUP BY customer_id;
+
 ```
 
 **Result:**
 
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9582fff7-4ae9-42e9-b04a-198c983244fe" width=10% height=10%>
+
+
 6. What was the maximum number of pizzas delivered in a single order?
 
-Steps:
-Query:
 ```sql
+
 WITH delivered AS (
   SELECT 
     c.order_id, 
@@ -185,85 +193,94 @@ WITH delivered AS (
   WHERE r.distance IS NOT NULL
   GROUP BY c.order_id
 )
-SELECT MAX(pizza_per_order) AS max_pizza_per_order
+SELECT MAX(pizza_per_order) AS max_count
 FROM delivered;
+
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/5510b3cd-1411-40d4-9cd1-366f8c0a62b2" width=20% height=20%>
+
 
 7. For each customer, how many delivered pizzas had at least 1 change and how many had no changes?
 
-Steps:
-
-Query:
 ```sql
-
-SELECT
+SELECT 
   c.customer_id,
-  COUNT(CASE WHEN c.exclusions <> ' ' OR c.extras <> ' ' THEN 1 END) AS changes,
-  COUNT(CASE WHEN (c.exclusions = ' ' AND c.extras = ' ') OR (c.exclusions IS NULL AND c.extras IS NULL) THEN 1 END) AS no_change
+  SUM (CASE WHEN c.exclusions IS NOT NULL OR c.extras IS NOT NULL THEN 1 ELSE 0 END) AS changes,
+  SUM (CASE WHEN c.exclusions IS NULL OR c.extras IS NULL THEN 1 ELSE 0 END) AS no_change
 FROM pizza_runner.customer_orders AS c
-JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
-WHERE r.distance IS NOT NULL
-GROUP BY c.customer_id
-ORDER BY c.customer_id;
+INNER JOIN pizza_runner.runner_orders AS r
+  ON c.order_id = r.order_id
+WHERE r.cancellation IS NULL
+  OR r.cancellation NOT IN ('Restaurant Cancellation', 'Customer Cancellation')
+GROUP BY co.customer_id
+ORDER BY co.customer_id;
+
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/835aadff-cc85-44d8-b266-014841a7e119" width=10% height=10%>
+
 
 8. How many pizzas were delivered that had both exclusions and extras?
 
-Steps:
-Query:
+
 ```sql
 
-WITH delivered AS (
-  SELECT 
-    c.order_id, 
-    COUNT(c.pizza_id) AS pizza_per_order
-  FROM pizza_runner.customer_orders AS c
-  JOIN pizza_runner.runner_orders AS r ON c.order_id = r.order_id
-  WHERE r.distance IS NOT NULL
-  GROUP BY c.order_id
-)
-SELECT 
-  COUNT(c.pizza_id) as delivered_with_exclusions_and_extras 
-FROM delivered
-WHERE 
-  pickup_time <> 'null'
-  AND exclusions IS NOT NULL AND LENGTH(exclusions) > 0
-  AND extras IS NOT NULL AND LENGTH(extras) > 0;
+SELECT  
+  SUM(
+    CASE WHEN exclusions IS NOT NULL AND extras IS NOT NULL THEN 1
+    ELSE 0
+    END) AS pizza_count_w_exclusions_extras
+FROM pizza_runner.customer_orders AS c
+JOIN pizza_runner.runner_orders AS r
+  ON c.order_id = r.order_id
+WHERE r.distance >= 1 
+  AND exclusions IS DISTINCT FROM ' ' 
+  AND extras IS DISTINCT FROM ' ';
+
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/7c2d39cd-7368-42c2-866d-37260ad56971" width=20% height=20%>
+
 
 9. What was the total volume of pizzas ordered for each hour of the day?
 
-Steps:
-
-Query:
 ```sql
-
-SELECT EXTRACT(HOUR FROM order_time) AS hour_of_day,
-  COUNT(*) AS total_pizzas_ordered
-FROM pizza_runner.customer_orders
+SELECT
+  DATE_PART('hour', order_time::TIMESTAMP) AS hour_of_day,
+  COUNT(*) AS pizza_count
+FROM updated_customer_orders
+WHERE order_time IS NOT NULL
 GROUP BY hour_of_day
-ORDER BY
-  hour_of_day;
+ORDER BY hour_of_day;
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/fc728fe9-0557-4a90-826f-0bb13443d5f0" width=20% height=20%>
 
 
 10. What was the volume of orders for each day of the week?
 
-Steps:
-
-Query:
 ```sql
 
 SELECT
   to_char(date_trunc('day', order_time + INTERVAL '2 days'), 'Day') AS day_of_week,
-  COUNT(order_id) AS total_pizzas_ordered
+  COUNT(order_id) AS pizza_count
 FROM
   pizza_runner.customer_orders
 GROUP BY
   day_of_week;
+  
 ```
-Result:
+
+**Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/03f43032-25f1-4ca1-8936-81fefb1f52a9" width=20% height=20%>
+
