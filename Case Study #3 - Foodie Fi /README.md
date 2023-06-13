@@ -18,17 +18,21 @@ Danny created Foodie-Fi with a data driven mindset and wanted to ensure all futu
 
 ## Questions and Solutions 
 
-1. How many customers has Foodie-Fi ever had?
+**1. How many customers has Foodie-Fi ever had?**
 
 ```sql
 
-SELECT COUNT(DISTINCT customer_id) AS customer_count
+SELECT COUNT(DISTINCT customer_id) AS total_customers
 FROM foodie_fi.subscriptions;
 
 ```
 **Result:**
 
-2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/1dacdeca-43a4-4ecf-a2af-7dd05c354232" width=20% height=20%>
+
+
+
+**2. What is the monthly distribution of trial plan start_date values for our dataset - use the start of the month as the group by value.**
 
 ```sql
  SELECT 
@@ -43,8 +47,11 @@ ORDER BY month_num;
 
 **Result:**
 
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/e4e7a8ca-3483-468e-b737-dd5eb28ea4bb">
 
-3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name
+
+
+**3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name. **
 
 ```sql
 
@@ -58,7 +65,10 @@ ORDER BY plan_id;
 ```
 **Result:**
 
-4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9a0cf92c-0063-4f0d-8361-24eb90bbf191">
+
+
+**4. What is the customer count and percentage of customers who have churned rounded to 1 decimal place?**
 
 ```sql
 SELECT COUNT(*) AS churn_count, 
@@ -73,34 +83,43 @@ WHERE p.plan_id = 4;
 
 **Result:**
 
-5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/b01fb733-2e2a-46c9-abe5-fe53d439ab00">
+
+
+**5. How many customers have churned straight after their initial free trial - what percentage is this rounded to the nearest whole number?**
 
 ```sql
-WITH next_plan_cte AS (
+WITH ranked_cte AS (
+  SELECT 
+    sub.customer_id,  
+    plans.plan_name, 
+    LEAD(plans.plan_name) OVER ( 
+      PARTITION BY sub.customer_id
+      ORDER BY sub.start_date) AS next_plan
+  FROM foodie_fi.subscriptions AS sub
+  JOIN foodie_fi.plans AS plans
+    ON sub.plan_id = plans.plan_id
+)
+  
 SELECT 
-  customer_id, 
-  plan_id, 
-  LEAD(plan_id, 1) OVER( 
-    PARTITION BY customer_id 
-    ORDER BY plan_id) as next_plan
-FROM foodie_fi.subscriptions)
-
-SELECT 
-  next_plan, 
-  COUNT(*) AS conversions,
-  ROUND(100 * COUNT(*)::NUMERIC / (
-    SELECT COUNT(DISTINCT customer_id) 
-    FROM foodie_fi.subscriptions),1) AS conversion_rate
-FROM next_plan_cte
-WHERE next_plan IS NOT NULL 
-  AND plan_id = 0
-GROUP BY next_plan
-ORDER BY next_plan;
+  COUNT(customer_id) AS churned_customers,
+  ROUND(100.0 * 
+    COUNT(customer_id) 
+    / (SELECT COUNT(DISTINCT customer_id) 
+      FROM foodie_fi.subscriptions)
+  ) AS churn_percentage
+FROM ranked_cte
+WHERE plan_name = 'trial' 
+  AND next_plan = 'churn';
 
 ```
+
 **Result:**
 
-6. What is the number and percentage of customer plans after their initial free trial?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/b99e7863-780b-4acc-9c21-b163fbbc6eaf">
+
+
+**6. What is the number and percentage of customer plans after their initial free trial?**
 
 ```sql
 WITH next_plans AS (
@@ -130,7 +149,10 @@ ORDER BY next_plan_id;
 
 **Result:**
 
-7. What is the customer count and percentage breakdown of all 5 plan_name values at 20-12-31?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/bd55fca6-324b-465a-ac08-7bf91f578763">
+
+
+**7. What is the customer count and percentage breakdown of all 5 plan_name values at 20-12-31?**
 
 ```sql
 WITH customer_breakdown AS (
@@ -157,21 +179,25 @@ ORDER BY plan_id;
 
 **Result:**
 
-8. How many customers have upgraded to an annual plan in 2020?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/66774872-4607-4242-9ad5-e7da4677e27a">
+
+**8. How many customers have upgraded to an annual plan in 2020?**
 
 ```sql
 
 SELECT COUNT(DISTINCT customer_id)
 FROM foodie_fi.subscriptions 
-WHERE start_date >= '2020-12-31'
+WHERE start_date <= '2020-12-31'
 	AND plan_id = 3;
 ```
 
 **Result:**
 
-9. How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/7ff2f9cf-9e51-443f-9289-4fab93cdd511">
 
-Query:
+
+**9. How many days on average does it take for a customer to an annual plan from the day they join Foodie-Fi?**
+
 ```sql
 WITH trial_plan AS 
 (SELECT 
@@ -199,32 +225,38 @@ JOIN annual_plan  AS a
 
 **Result:**
 
-10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/fe0f8f7e-32cb-4bce-93c8-7d82f050ef1a">
+
+
+**10. Can you further breakdown this average value into 30 day periods (i.e. 0-30 days, 31-60 days etc)**
 
 ```sql
 WITH trial_plan AS (
+-- trial_plan CTE: Filter results to include only the customers subscribed to the trial plan.
   SELECT 
     customer_id, 
     start_date AS trial_date
   FROM foodie_fi.subscriptions
   WHERE plan_id = 0
-),
-annual_plan AS (
+), annual_plan AS (
+-- annual_plan CTE: Filter results to only include the customers subscribed to the pro annual plan.
   SELECT 
     customer_id, 
     start_date AS annual_date
   FROM foodie_fi.subscriptions
   WHERE plan_id = 3
-),
-bins AS (
+), bins AS (
+-- bins CTE: Put customers in 30-day buckets based on the average number of days taken to upgrade to a pro annual plan.
   SELECT 
-    FLOOR(DATE_DIFF('day', t.trial_date, a.annual_date) / 30) AS avg_days_to_upgrade
-  FROM trial_plan t
-  JOIN annual_plan a ON t.customer_id = a.customer_id
+    WIDTH_BUCKET(annual.annual_date - trial.trial_date, 0, 365, 12) AS avg_days_to_upgrade
+  FROM trial_plan AS trial
+  JOIN annual_plan AS annual
+    ON trial.customer_id = annual.customer_id
 )
+  
 SELECT 
-  CONCAT((avg_days_to_upgrade * 30 - 30), ' - ', avg_days_to_upgrade * 30, ' days') AS breakdown, 
-  COUNT(*) AS customers
+  ((avg_days_to_upgrade - 1) * 30 || ' - ' || avg_days_to_upgrade * 30 || ' days') AS bucket, 
+  COUNT(*) AS num_of_customers
 FROM bins
 GROUP BY avg_days_to_upgrade
 ORDER BY avg_days_to_upgrade;
@@ -232,19 +264,19 @@ ORDER BY avg_days_to_upgrade;
 
 **Result:**
 
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/2d5199c7-ef99-43e8-8c16-932610d12e79">
+
+
 11. How many customers downgraded from a pro monthly to a basic monthly plan in 2020?
 
 ```sql
-WITH next_plan_cte AS 
-(
-SELECT customer_id, plan_id start_date,
-	LEAD(plan_id, 1) OVER (PARTITION BY customer_id ORDER BY start_date) AS next_plan
-FROM foodie_fi.subscriptions)
 
-SELECT COUNT(DISTINCT customer_id)
+SELECT COUNT(*) AS customers_downgraded
 FROM next_plan_cte
-WHERE next_plan = 1
-AND plan_id = 2; 
+WHERE plan_id=2 AND next_plan=1;
+
 ```
 
 **Result:**
+
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/9c93874c-f848-4de6-8a24-3e934d161c13">
