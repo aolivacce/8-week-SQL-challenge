@@ -51,7 +51,7 @@ ORDER BY month_num;
 
 
 
-**3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name. **
+**3. What plan start_date values occur after the year 2020 for our dataset? Show the breakdown by count of events for each plan_name.**
 
 ```sql
 
