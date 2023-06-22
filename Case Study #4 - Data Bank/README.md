@@ -26,9 +26,8 @@ This case study is all about calculating metrics, growth and helping the busines
 
 ## Questions and Solutions 
 
-1. How many unique nodes are there on the Data Bank system?
+**1. How many unique nodes are there on the Data Bank system?**
 
-Query:
 
 ```sql
 SELECT COUNT(DISTINCT node_id) 
@@ -37,22 +36,11 @@ FROM data_bank.customer_nodes;
 
 Result:
 
-2. What is the number of nodes per region?
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/dab50c28-a582-478b-a897-f2ea623f2c3b)
 
-Query:
 
-```sql
-SELECT r.region_name, COUNT(DISTINCT n.node_id) AS nodes_per_region
-FROM data_bank.customer_nodes AS n
-JOIN data_bank.regions AS r ON n.region_id = r.region_id
-GROUP BY r.region_name;
-```
+**2. What is the number of nodes per region?**
 
-Result:
-
-3. How many customers are allocated to each region?
-
-Query:
 
 ```sql
 SELECT r.region_name, COUNT(DISTINCT n.node_id) AS nodes_per_region
@@ -63,9 +51,22 @@ GROUP BY r.region_name;
 
 Result:
 
-4. How many days on average are customers reallocated to a different node?
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/66b1fd9b-f8a2-4043-adc2-47d9fdc723ae)
 
-Query:
+
+**3. How many customers are allocated to each region?**
+
+```sql
+SELECT r.region_name, COUNT(DISTINCT n.node_id) AS nodes_per_region
+FROM data_bank.customer_nodes AS n
+JOIN data_bank.regions AS r ON n.region_id = r.region_id
+GROUP BY r.region_name;
+```
+
+Result:
+
+**4. How many days on average are customers reallocated to a different node?**
+
 
 ```sql
 WITH node_days AS (
@@ -91,6 +92,8 @@ FROM total_node_days;
 ```
 
 Result:
+
+
 
 5. What is the median, 80th and 95th percentile for this same reallocation days metric for each region?
 
@@ -121,11 +124,10 @@ ORDER BY region_name;
 
 Result:
 
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/3ff5049a-bc21-49cf-a2f8-c83c1de17df4)
 
 
-6. What is the unique count and total amount for each transaction type?
-
-Query:
+**6. What is the unique count and total amount for each transaction type?**
 
 ```sql
 SELECT txn_type, COUNT(customer_id) AS total_count, SUM(txn_amount) AS total_amount
@@ -135,9 +137,10 @@ GROUP BY txn_type;
 
 Result:
 
-7. What is the average total historical deposit counts and amounts for all customers?
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/4dd0cf10-8739-422d-bb37-18fbfb6e61f9)
 
-Query:
+
+**7. What is the average total historical deposit counts and amounts for all customers?**
 
 ```sql
 WITH cte AS (
@@ -153,9 +156,10 @@ FROM cte;
 
 Result:
 
-8. For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/412e02ef-38d0-43a8-bd07-d6a98fcf4a2f)
 
-Query:
+
+**8. For each month - how many Data Bank customers make more than 1 deposit and either 1 purchase or 1 withdrawal in a single month?**
 
 ```sql
 
