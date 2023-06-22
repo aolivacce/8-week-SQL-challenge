@@ -93,11 +93,10 @@ FROM total_node_days;
 
 Result:
 
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/3ff5049a-bc21-49cf-a2f8-c83c1de17df4)
 
 
-5. What is the median, 80th and 95th percentile for this same reallocation days metric for each region?
-
-Query:
+**5. What is the median, 80th and 95th percentile for this same reallocation days metric for each region?**
 
 ```sql
 WITH date_diff AS
@@ -124,7 +123,6 @@ ORDER BY region_name;
 
 Result:
 
-![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/3ff5049a-bc21-49cf-a2f8-c83c1de17df4)
 
 
 **6. What is the unique count and total amount for each transaction type?**
@@ -190,9 +188,10 @@ GROUP BY
 
 Result:
 
-9. What is the closing balance for each customer at the end of the month?
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/cb8625d9-f23f-429c-8f2d-ed613c6c738e)
 
-Query:
+
+**9. What is the closing balance for each customer at the end of the month?**
 
 ```sql
 SELECT customer_id, 
@@ -205,6 +204,7 @@ ORDER BY customer_id;
 
 Result:
 
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/85a279a9-b146-439c-9a4e-90da4835e1c8)
 
 
 View the case study [here](https://8weeksqlchallenge.com/case-study-4/) and my full query [here](https://github.com/aolivacce/8-week-SQL-challenge/blob/main/Case%20Study%20%234%20-%20Data%20Bank/fullSQLquery.sql)!
