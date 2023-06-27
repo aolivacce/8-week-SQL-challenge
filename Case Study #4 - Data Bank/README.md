@@ -57,13 +57,18 @@ Result:
 **3. How many customers are allocated to each region?**
 
 ```sql
-SELECT r.region_name, COUNT(DISTINCT n.node_id) AS nodes_per_region
-FROM data_bank.customer_nodes AS n
-JOIN data_bank.regions AS r ON n.region_id = r.region_id
-GROUP BY r.region_name;
+SELECT 
+  region_id, 
+  COUNT(customer_id) AS customer_count
+FROM data_bank.customer_nodes
+GROUP BY region_id
+ORDER BY region_id;
 ```
 
 Result:
+
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/aedf4ee2-53ed-4491-a242-5b919f2393b6)
+
 
 **4. How many days on average are customers reallocated to a different node?**
 
