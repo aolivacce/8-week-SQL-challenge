@@ -10,4 +10,5 @@ Throughout the challenge, participants tackle various aspects of data analysis, 
 * [🍜 Case Study #1 - Danny's Diner](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%231%20-%20Danny's%20Diner)
 * [🍕 Case Study #2 - Pizza Runner](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%232%20-%20Pizza%20Runner)
 * [🥑 Case Study #3 - Foodie-Fi](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%233%20-%20Foodie%20Fi%20)
-* [🪙 Case Study #4 - Data Bank](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%234%20-%20Data%20Bank)
+* [🏦 Case Study #4 - Data Bank](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%234%20-%20Data%20Bank)
+* [🛒 Case Study #5 - Data Mart](https://github.com/aolivacce/8-week-SQL-challenge/tree/main/Case%20Study%20%235%20-%20Data%20Mart)
