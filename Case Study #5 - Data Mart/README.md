@@ -41,9 +41,15 @@ In a single query, perform the following operations and generate a new table in 
 
 - Add a new column called ``` age_band ``` after the original ``` segment ``` column using the following mapping on the number inside the ``` segment ``` value
 
-chart 
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/6b8e6ac4-99d2-4f4b-bf67-ffcbdbb9f96f" width=20% height=20%>
+
 - Add a new ``` demographic ``` column using the following mapping for the first letter in the ``` segment```  values:
 
-chart
+<img src="https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/53600a9a-6218-493b-b314-9f863e60a66d" width=20% height=20%>
+
+
+- Ensure all ``` null ``` string values with an ``` "unknown" ``` string value in the original ``` segment ``` column as well as the new ``` age_band ``` and ``` demographi c``` columns
+
+- Generate a new ``` avg_transaction column``` as the ``` sales ``` value divided by ``` transactions ``` rounded to 2 decimal places for each record
 
 
