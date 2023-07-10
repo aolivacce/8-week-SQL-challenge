@@ -52,4 +52,52 @@ In a single query, perform the following operations and generate a new table in 
 
 - Generate a new ``` avg_transaction column``` as the ``` sales ``` value divided by ``` transactions ``` rounded to 2 decimal places for each record
 
+**Let's clean this data!**
+``` sql
+
+DROP TABLE IF EXISTS clean_weekly_sales;
+CREATE TEMP TABLE clean_weekly_sales AS (
+SELECT
+  TO_DATE(week_date, 'DD/MM/YY') AS week_date,
+  DATE_PART('week', TO_DATE(week_date, 'DD/MM/YY')) AS week_number,
+  DATE_PART('month', TO_DATE(week_date, 'DD/MM/YY')) AS month_number,
+  DATE_PART('year', TO_DATE(week_date, 'DD/MM/YY')) AS calendar_year,
+  region, 
+  platform, 
+  segment,
+  CASE 
+    WHEN RIGHT(segment,1) = '1' THEN 'Young Adults'
+    WHEN RIGHT(segment,1) = '2' THEN 'Middle Aged'
+    WHEN RIGHT(segment,1) in ('3','4') THEN 'Retirees'
+    ELSE 'unknown' END AS age_band,
+  CASE 
+    WHEN LEFT(segment,1) = 'C' THEN 'Couples'
+    WHEN LEFT(segment,1) = 'F' THEN 'Families'
+    ELSE 'unknown' END AS demographic,
+  transactions,
+  ROUND((sales::NUMERIC/transactions),2) AS avg_transaction,
+  sales
+FROM data_mart.weekly_sales
+
+);
+
+
+
+```
+
+**Let's take a peak at the data:**
+
+![image](https://github.com/aolivacce/8-week-SQL-challenge/assets/72052149/b3efa78a-62c8-457f-9dfa-578a629810c6)
+
+## B. Data Exploration 
+
+1. What day of the week is used for each week_date value?
+2. What range of week numbers are missing from the dataset?
+3. How many total transactions were there for each year in the dataset?
+4. What is the total sales for each region for each month?
+5. What is the total count of transactions for each platform
+6. What is the percentage of sales for Retail vs Shopify for each month?
+7. What is the percentage of sales by demographic for each year in the dataset?
+8. Which age_band and demographic values contribute the most to Retail sales?
+9. Can we use the avg_transaction column to find the average transaction size for each year for Retail vs Shopify? If not - how would you calculate it instead?
 
